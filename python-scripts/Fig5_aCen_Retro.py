@@ -8,54 +8,11 @@ import matplotlib.colors as colors
 import matplotlib.cm as cm
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from matplotlib import rcParams
-from scipy.optimize import curve_fit
 import sys
 import os
 
 rcParams.update({'font.size': 22})
 rcParams.update({'mathtext.fontset': 'cm'})
-#rc('text', usetex=True)
-
-def func1(x,a,b):
-    return  a*(1-b*x)  #
-
-def func1_bin(x,a,b,c):
-    return -(a*x-b)**2 + c
-
-def func2(x,b,c):
-    ep = x[:,0]
-    es = x[:,1]
-    #print(ep,es)
-    #ep,ex = x
-    return  0.5*(1.+b*ep-c*es)
-
-def Combine_files(fn_out,output_fldr):
-    if os.path.exists(fn_out):
-        os.remove(fn_out)
-    filelist = [f for f in os.listdir(output_fldr) if f.startswith('Stab_') and f.endswith('.txt') and f != 'Stab_moon.txt']
-
-    with open(output_fldr + fn_out, "w") as outfile:
-        for fn in filelist:
-            with open(output_fldr+fn,"r") as infile:
-                outfile.write(infile.read())
-                
-def Combine_files_dup(fn_out,output_fldr):
-    if os.path.exists(fn_out):
-        os.remove(fn_out)
-    filelist = [f for f in os.listdir(output_fldr) if f.startswith('Stab_') and f.endswith('.txt') and f != 'Stab_moon.txt']
-
-    #with open(output_fldr + fn_out, "w") as outfile:
-    out_line = []
-    for fn in filelist:
-        with open(output_fldr+fn,"r") as infile:
-            lines = infile.readlines()
-        for l in lines:
-            if not l in out_line:
-                out_line.append(l)
-                #outfile.write(infile.read())
-    out = open(output_fldr + fn_out, "w")
-    for i in range(0,len(out_line)):
-        out.write(out_line[i])
 
 def colorbar(mappable):
     last_axes = plt.gca()
@@ -81,14 +38,14 @@ def plot_ep(ax,data_dir,data_file,lbl,idx,fname):
 
     data = np.genfromtxt(data_dir+data_file,delimiter=',',comments='#')
     stab = np.where(np.abs(data[:,-1]-tscale)<1e-6)[0]
-    print(len(stab),len(data))
+    #print(len(stab),len(data))
 
     xi = np.arange(0,0.61,0.01)
     yi = np.arange(0.25,0.71,0.01)
     X = []
     Y = []
     Z = []
-    out = open(fname,'w')
+    out = open(output_fldr+fname,'w')
     out.write("#e_p,R_H,f_stab\n")
     for xp in xi:
         for yp in yi:
@@ -100,12 +57,9 @@ def plot_ep(ax,data_dir,data_file,lbl,idx,fname):
                 for cnt in range(0,len(xy_cut)):
                     if np.abs(data[xy_cut[cnt],-1]-tscale)<1e-6:
                         stab_frac += 1.
-                    #else:
-                    #    stab_frac -= 1.
                 if stab_frac <= 0.05:
                     stab_frac -= 1.
                 stab_frac /= float(len(xy_cut))
-                #print(float(len(xy_cut)))
             else:
                 stab_frac = -1.
             Z.append(stab_frac)
@@ -124,59 +78,33 @@ def plot_ep(ax,data_dir,data_file,lbl,idx,fname):
     x_data = [] #np.zeros((len(ecc_rng),2))
     y_data = [] #np.zeros(len(ecc_rng))
     ecc_data = []
-    prob_cut = 1.#float(sys.argv[1])
+    prob_cut = 1.
     eps_p = 1.25*a_p[idx-1]/23.78*(0.524/(1.-0.524**2))
     for e_i in range(0,len(ecc_rng)):
         e_cut = np.where(np.logical_and(np.abs(X-ecc_rng[e_i])<1e-6,Z>=prob_cut))[0]
         if len(e_cut)>=1:
             ecc_data.append(ecc_rng[e_i])
             eta_p = np.abs(ecc_rng[e_i]-eps_p)
-            #x_data[e_i,:] = [eps_p,eta_p]
             x_data.append([eps_p,eta_p])
-            #print(cut_y)
             y_data.append(np.max(Y[e_cut]))
-            #y_data[e_i] = np.max(Y[e_cut])
+
     x_data = np.array(x_data)
     y_data = np.array(y_data)
-    #if idx == 1:
-    #popt,pcov = curve_fit(func2,x_data,y_data,method='lm') #bounds=([0.35,0.5],[0.55,1.5])
-    #elif idx == 3:
-    #    popt,pcov = curve_fit(func1,x_data,y_data,method='lm') #bounds=([0.35,0.5],[0.55,1.5])
-    #print(popt,np.sqrt(np.diag(pcov)))
-    #sigma = np.sqrt(np.diag(pcov))
-    #ecc = np.arange(0,0.61,0.01)
-    #ax.plot(ecc,func(ecc,0.4895,1.0305),'k--',lw=lw,label='Domingos et al. 2006')
-    #ax.plot(ecc_data,func2(x_data,*popt),'-',color='gray',lw=lw,label='This work')
-    '''for i in range(0,300):
-        a_i = np.random.normal(popt[0],sigma[0])
-        b_i = np.random.normal(popt[1],sigma[1])
-        if idx == 1:
-            y_i = func1(ecc,a_i,b_i)
-            ax.plot(ecc,y_i,'-',color='gray',lw=3,alpha=0.1)
-        #elif idx == 3:
-        #    #c_i = np.random.normal(popt[2],sigma[2])
-        #    y_i = func1(ecc,a_i,b_i)
-        #ax.plot(ecc,y_i,'-',color='gray',lw=3,alpha=0.1)
-    if idx==1:
-        ax.plot(ecc,func1(ecc,0.4895,1.0305),'k--',lw=lw,label='DWY06')
-        ax.plot(ecc,func1(ecc,*popt),'-',color='r',lw=lw,label='This Work')
-        ax.legend(loc='upper right',fontsize='x-large')'''
 
     eps = 1.25*a_p[idx-1]/23.78*(0.524/(1.-0.524**2))
     eta = np.abs(xi-eps)
     y_stab = (1.- eps - eta)
-    #y_stab = 0.5*(1.+2*eps-1.5*eta)
+
     ax.plot(xi,0.65*y_stab,'--',color='gray',lw=lw)
     ax.plot(xi,0.95*y_stab,'-',color='gray',lw=lw)
     
     N_min = 3
     N_max = 15
-    data = np.genfromtxt("res_width_N1.txt",delimiter=',',comments='#')
+    data = np.genfromtxt("../data/Fig1/res_width_N1_A.txt",delimiter=',',comments='#')
     intersect = []
     for N in range(N_min,N_max):
         N_idx = np.where(np.abs(data[:,0]-N)<1e-6)[0]
         if N>=5:
-            #ax.plot(data[N_idx[0],5],data[N_idx[0],6],'.',color='b',ms=25,zorder=5)
             intersect.append((data[N_idx[0],5],data[N_idx[0],6]))
     intersect = np.asarray(intersect)
     spl = UnivariateSpline(intersect[:,0],intersect[:,1])
@@ -205,27 +133,14 @@ def plot_ep(ax,data_dir,data_file,lbl,idx,fname):
     if idx == 3:
         color_label=r'$f_{\rm stab}$'
         cax = fig.add_axes([0.92,0.11,0.015,0.77])
-        #cax=plt.axes([pos[1,0]-0.03,pos[0,1]-0.005,0.01,pos[1,1]-pos[0,1]+0.015])
         cbar=plt.colorbar(cmmapable,cax=cax,orientation='vertical')
-        #cbar=fig.colorbar(CS,ax=ax,orientation='horizontal')
-        #cbar=colorbar(CS)
         cbar.set_label(color_label,fontsize=fs)
         cbar.set_ticks(np.arange(0.,1.25,0.25))
         cbar.ax.tick_params(axis='both', direction='out',length = 8.0, width = 8.0,labelsize=fs)
-        #fig.text(0.3,0.94,color_label, color='black',fontsize=fs,ha='center', va='center')
 
 
-home = os.getcwd() + "/"
-exomoon_home = "/mnt/c/Users/satur/Dropbox/Marialis/exomoon_submoon/"
-output_fldr_2 = home + "aCenA_moon_circ_2.00_retro/"
-output_fldr_2B = home + "aCenB_moon_circ_2.00_retro/"
-output_fldr_225 = home + "aCenA_moon_circ_2.25_retro/"
-output_fldr_250 = home + "aCenA_moon_circ_2.50_retro/"
 
-Combine_files('Stab_moon.txt',output_fldr_2)
-Combine_files('Stab_moon.txt',output_fldr_2B)
-Combine_files('Stab_moon.txt',output_fldr_225)
-Combine_files('Stab_moon.txt',output_fldr_250)
+data_dir = "../data/Fig5/"
 
 tscale = 1e5
 
@@ -245,16 +160,11 @@ ax3 = fig.add_subplot(223)
 ax4 = fig.add_subplot(224)
 
 
-#plot_ep(ax1,exomoon_home+"Domingos06_circ/","Stab_moon.txt","sat",1,"Stab_frac_moon.txt")
-plot_ep(ax1,output_fldr_2B,"Stab_moon.txt","sat",1,"Stab_frac_moon_2B.txt")
-plot_ep(ax2,output_fldr_2,"Stab_moon.txt","sat",2,"Stab_frac_moon_2.txt")
-plot_ep(ax3,output_fldr_225,"Stab_moon.txt","sat",3,"Stab_frac_moon_225.txt")
-plot_ep(ax4,output_fldr_250,"Stab_moon.txt","sat",4,"Stab_frac_moon_250.txt")
-
-#plot_esat(ax2,exomoon_home+"GenRuns_out/",2,"Contour_moon.txt")
-#plot_ep(ax2,home+"aCenA_moon_circ/","Stab_moon.txt","sat",3,"Stab_frac_moon_2.txt")
-#plot_esat(ax2,home+"aCenA_moon_circ/",4,"Contour_moon.txt")
+plot_ep(ax1,data_dir,"Stab_moon_2BR.txt","sat",1,"Stab_frac_moon_2BR.txt")
+plot_ep(ax2,data_dir,"Stab_moon_2R.txt","sat",2,"Stab_frac_moon_2R.txt")
+plot_ep(ax3,data_dir,"Stab_moon_225R.txt","sat",3,"Stab_frac_moon_225R.txt")
+plot_ep(ax4,data_dir,"Stab_moon_250R.txt","sat",4,"Stab_frac_moon_250R.txt")
 
 fig.subplots_adjust(wspace=0.25,hspace=0.15)
-fig.savefig("Stability_Fig_retro.png",bbox_inches='tight',dpi=300)
+fig.savefig("../Figs/Fig5_aCen_Retro.png",bbox_inches='tight',dpi=300)
 plt.close()

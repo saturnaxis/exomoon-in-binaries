@@ -13,7 +13,6 @@ import os
 
 rcParams.update({'font.size': 26})
 rcParams.update({'mathtext.fontset': 'cm'})
-#rc('text', usetex=True)
 
 
 def colorbar(mappable):
@@ -41,11 +40,11 @@ def f_ecc(f_idx,ecc):
 
 def func(x,f_c,a_p,k2p,M_p,R_p,Q_p,M_star,Tmax):
     a_c = f_c*a_p*(M_p*(1+x)/(3.*M_star))**(1./3.)
-    a_o = 3.*2.88*R_p#0.05*a_p*(M_p*(1+x)/(3*M_star))**(1./3.)
-    Q_fact = Q_p/(3.*k2p*R_p**5*Tmax*np.sqrt(G*M_p))#/(1.-0.15**2)**(15./2.)
+    a_o = 3.*2.88*R_p
+    Q_fact = Q_p/(3.*k2p*R_p**5*Tmax*np.sqrt(G*M_p))
     return x*np.sqrt(1.+x) - (2./13.)*(a_c**(13./2.)-a_o**(13./2.))*Q_fact
 
-home = os.getcwd() + "/"
+data_dir = "../data/Fig8/"
 
 fs = 50#'xx-large'
 width = 10.
@@ -108,7 +107,7 @@ for s in range(0,4):
         Q_p = 33*f_ecc(2,0.15)
     else:
         Q_p = 33
-    f_crit = np.zeros(len(ep_rng))#0.4061*(1.-eps-np.abs(X-eps))
+    f_crit = np.zeros(len(ep_rng))
     for ep in range(0,len(ep_rng)):
         f_crit[ep] = 0.4*(1.-eps-np.abs(ep_rng[ep]-eps))
         try:
@@ -122,15 +121,12 @@ for s in range(0,4):
         fname = "mass_stab_%s_t.txt" % star[s]
     else:
         fname = "mass_stab_%s_Q.txt" % star[s]
-    data = np.genfromtxt(fname,delimiter=',',comments='#')
-    X = data[:,0]#0.4*(1.-eps-np.abs(data[:,0]-eps))
+    data = np.genfromtxt(data_dir+fname,delimiter=',',comments='#')
+    X = data[:,0]
     Y = data[:,1]
     
-    #R_H = a_p*((1.+Y)*M_E/(3.*M_star))**(1./3.)
-    #print(R_H[:10])
-    #a_crit = 0.4061*(1.-eps-np.abs(X-eps))
     
-    Z = data[:,2]/X #*(1.+data[:,3])
+    Z = data[:,2]/X
     a_crit = 0.4*(1.-eps-np.abs(data[:,4]-eps))
     bound_cut = np.where(np.logical_and(data[:,2]*(1+data[:,3])>=a_crit,data[:,2]*(1-data[:,3])<2.88*R_E))[0]
     Z[bound_cut] *= -1
@@ -165,20 +161,17 @@ for s in range(0,4):
         xticklabels = ['%1.2f' % x for x in xticks]
         ax.set_xticklabels(xticklabels)
         ax_top.set_xticklabels([])
-    #ax.set_xticks(np.arange(0,0.7,0.1))
+
     if s == 3:
         color_label=r'$a_{\rm fin}/a_{\rm sat}^{\rm crit}$'
         cax = fig.add_axes([0.92,0.11,0.015,0.77])
-        #cax=plt.axes([pos[1,0]-0.03,pos[0,1]-0.005,0.01,pos[1,1]-pos[0,1]+0.015])
+
         cbar=plt.colorbar(cmmapable,cax=cax,orientation='vertical')
-        #cbar=fig.colorbar(CS,ax=ax,orientation='horizontal')
-        #cbar=colorbar(CS)
         cbar.set_label(color_label,fontsize=fs)
         cbar.set_ticks(np.arange(0.1,1.1,0.1))
         cbar.ax.tick_params(axis='both', direction='out',length = 8.0, width = 8.0)
-        #fig.text(0.3,0.94,color_label, color='black',fontsize=fs,ha='center', va='center')
 
 
 fig.subplots_adjust(wspace=0.12,hspace=0.12)
-fig.savefig("Max_Moon_Mass.png",bbox_inches='tight',dpi=300)
+fig.savefig("../Figs/Fig8_Max_Mass.png",bbox_inches='tight',dpi=300)
 plt.close()

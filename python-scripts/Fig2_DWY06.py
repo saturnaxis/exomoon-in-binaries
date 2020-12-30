@@ -87,7 +87,7 @@ def plot_ep(ax,data_dir,data_file,lbl,idx,fname):
             x_data.append(ecc)
             y_data.append(np.max(Y[e_cut]))
 
-    popt,pcov = curve_fit(func1,x_data,y_data,method='lm') #bounds=([0.35,0.5],[0.55,1.5])
+    popt,pcov = curve_fit(func1,x_data,y_data,method='lm')
     #print(popt,np.sqrt(np.diag(pcov)))
     sigma = np.sqrt(np.diag(pcov))
     ecc = np.arange(0,0.61,0.01)
@@ -107,7 +107,7 @@ def plot_ep(ax,data_dir,data_file,lbl,idx,fname):
     
     N_min = 3
     N_max = 15
-    data = np.genfromtxt(data_dir+"res_width_N1_A.txt",delimiter=',',comments='#')
+    data = np.genfromtxt("../data/Fig1/res_width_N1_A.txt",delimiter=',',comments='#')
     intersect = []
     for N in range(N_min,N_max):
         N_idx = np.where(np.abs(data[:,0]-N)<1e-6)[0]
@@ -142,7 +142,7 @@ def plot_ep(ax,data_dir,data_file,lbl,idx,fname):
         cbar.ax.tick_params(axis='both', direction='out',length = 8.0, width = 8.0,labelsize=fs)
 
 
-output_fldr = "../data/"
+data_dir = "../data/Fig2/"
 
 fs = 'x-large'
 width = 10.
@@ -156,7 +156,7 @@ a_p = [0,2,2.25,2.5]
 fig = plt.figure(figsize=(aspect*width,width),dpi=300)
 ax1 = fig.add_subplot(111)
 
-plot_ep(ax1,output_fldr,"Stab_moon_DWY06.txt","sat",1,"Stab_frac_moon_DWY06.txt")
+plot_ep(ax1,data_dir,"Stab_moon_DWY06.txt","sat",1,"Stab_frac_moon_DWY06.txt")
 
 
 fig.subplots_adjust(wspace=0.25,hspace=0.15)

@@ -12,6 +12,7 @@ rcParams.update({'font.size': 22})
 rcParams.update({'mathtext.fontset': 'cm'})
 
 G = 4.*np.pi**2
+data_dir = "../data/Fig1/"
 
 #constants
 M_A = 1.133
@@ -53,7 +54,7 @@ for st in star[:1]:
     M_st = M_A
     if st == 'B':
         M_st = M_B
-    out = open("../data/res_width_N1_%s.txt" % st,'w')
+    out = open(data_dir+"res_width_N1_%s.txt" % st,'w')
     out.write("#N,e_p,a_res,k_left,k_right,e_int,a_int\n")
     for N in range(N_min,N_max):
         for ecc in ecc_rng:
@@ -91,7 +92,7 @@ fig = plt.figure(1,figsize=(aspect*width,width),dpi=300)
 ax = fig.add_subplot(111)
 ax.set_facecolor('k')
 
-data = np.genfromtxt("../data/res_width_N1_A.txt",delimiter=',',comments='#')
+data = np.genfromtxt(data_dir+"res_width_N1_A.txt",delimiter=',',comments='#')
 intersect = []
 for N in range(N_min,N_max):
     N_idx = np.where(np.abs(data[:,0]-N)<1e-6)[0]
@@ -99,9 +100,7 @@ for N in range(N_min,N_max):
     ax.fill_between(data[N_idx,1],data[N_idx,4],data[N_idx,3],color=my_cmap(norm(N)),alpha=0.65,zorder=3)
     ax.plot(data[N_idx,1],data[N_idx,3],'-',color='w',lw=3,zorder=4)
     ax.plot(data[N_idx,1],data[N_idx,4],'-',color='w',lw=3,zorder=4)
-    #ax.plot(data[N_idx[0],5],data[N_idx[0],6],'.',color='b',ms=25,zorder=5)
     if N>=5:
-        #ax.plot(data[N_idx[0],5],data[N_idx[0],6],'.',color='b',ms=25,zorder=5)
         intersect.append((data[N_idx[0],5],data[N_idx[0],6]))
 
 eps = 1.25*a_p/23.78*(0.524/(1.-0.524**2))
@@ -140,5 +139,5 @@ cbar.set_ticks(np.arange(3.5,16.5,1.))
 cbar.set_ticklabels(['%i' % n for n in range(3,16)])
 cbar.ax.tick_params(axis='both', direction='out',length = 8.0, width = 8.0,labelsize=fs)
 
-fig.savefig("../Figs/Fig1.png",bbox_inches='tight',dpi=300)
+fig.savefig("../Figs/Fig1_MMR.png",bbox_inches='tight',dpi=300)
 plt.close()

@@ -4,12 +4,11 @@ from matplotlib import rcParams
 import matplotlib.ticker
 import os
 
-#rcParams['mathtext.default']='regular'
+
 rcParams.update({'font.size': 26})
 rcParams.update({'mathtext.fontset': 'cm'})
-#rcParams['text.usetex'] = True
 
-home = os.getcwd() + "/"
+data_dir = "../data/Fig7/"
 Q_rng = [10,100]
 Mf_rng = [0.0123,0.3]
 tau = [10,20,50,100,200,600]
@@ -69,27 +68,17 @@ for s in range(0,4):
     cnt = 0
     if s <2:
         for t in tau:
-            #fname = "acen_B_out.txt" % (Q_p,Mf)
-            #merge_idx = np.where(np.abs(data[:,3]-data[:,1])<=0)[0][0]
-            #if t == 10:
-            #    ax.axhline((G*M_E*1.0123/n_Roche**2)**(1./3.)/R_H,linestyle='--',lw=lw,color='k')
-            data = np.genfromtxt(home+"acen%s_secular_%03i.txt" % (star[s],t),delimiter=',',comments='#')
+            data = np.genfromtxt(data_dir+"acen%s_secular_%03i.txt" % (star[s],t),delimiter=',',comments='#')
             ax.plot(data[:,0],(G*M_E*1.0123/data[:,1]**2)**(1./3.)/R_H,'-',color=color[cnt],lw=lw,label='%i s' % t,zorder=5)
             cnt += 1
         
     else:
         for m in m_sat:
-            #fname = "acen_B_out.txt" % (Q_p,Mf)
-            #merge_idx = np.where(np.abs(data[:,3]-data[:,1])<=0)[0][0]
-            #if t == 10:
-            #    ax.axhline((G*M_E*1.0123/n_Roche**2)**(1./3.)/R_H,linestyle='--',lw=lw,color='k')
-            data = np.genfromtxt(home+"acen%s_secular_%1.1e.txt" % (star[s],m),delimiter=',',comments='#')
+            data = np.genfromtxt(data_dir+"acen%s_secular_%1.1e.txt" % (star[s],m),delimiter=',',comments='#')
             ax.plot(data[:,0],(G*M_E*1.0123/data[:,1]**2)**(1./3.)/R_H,'-',color=color[cnt],lw=lw,label='%s M$_\oplus$' % (str(m)),zorder=5)
             cnt += 1
         ax_top.set_xticklabels([])
         ax.set_xlabel("Time (yr)",fontsize=fs)
-            
-    #ax.axhline(0.38,linestyle='--',lw=lw,color='gray')
     ax.fill_between(10**np.arange(2,10.5,0.5),0.38,0.45,color='gray')
     ax.legend(loc='lower right',fontsize='large',ncol=3,frameon=False) #bbox_to_anchor=(1., 0.32)
 
@@ -118,5 +107,5 @@ for s in range(0,4):
     if s < 2:
         ax.set_xticklabels([])
 fig.subplots_adjust(wspace=0.1,hspace=0.1)
-fig.savefig("acen_tide_evol.png",bbox_inches='tight',dpi=300)
+fig.savefig("../Figs/Fig7_secular.png",bbox_inches='tight',dpi=300)
 plt.close()

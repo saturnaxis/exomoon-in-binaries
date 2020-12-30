@@ -45,7 +45,7 @@ def plot_ep(ax,data_dir,data_file,lbl,idx,fname,tscale):
     X = []
     Y = []
     Z = []
-    out = open(output_fldr+fname,'w')
+    out = open(data_dir+fname,'w')
     out.write("#e_p,R_H,f_stab\n")
     for xp in xi:
         for yp in yi:
@@ -88,7 +88,7 @@ def plot_ep(ax,data_dir,data_file,lbl,idx,fname,tscale):
         ax.plot(xi,0.95*y_stab,'-',color='gray',lw=lw)
         N_min = 3
         N_max = 15
-        data = np.genfromtxt(output_fldr+"res_width_N1_A.txt",delimiter=',',comments='#')
+        data = np.genfromtxt("../data/Fig1/res_width_N1_A.txt",delimiter=',',comments='#')
         intersect = []
         for N in range(N_min,N_max):
             N_idx = np.where(np.abs(data[:,0]-N)<1e-6)[0]
@@ -130,7 +130,7 @@ def plot_ep(ax,data_dir,data_file,lbl,idx,fname,tscale):
         cbar.set_ticks(np.arange(0.,1.25,0.25))
         cbar.ax.tick_params(axis='both', direction='out',length = 8.0, width = 8.0,labelsize=fs)
 
-output_fldr = "../data/"
+data_dir = "../data/Fig3/"
 
 fs = 'xx-large'
 width = 10.
@@ -150,10 +150,10 @@ ax4 = fig.add_subplot(224)
 
 
 
-plot_ep(ax1,output_fldr,"Stab_moon_HZ_A.txt","sat",1,"Stab_frac_moon_A.txt",1e5)
-plot_ep(ax2,output_fldr,"Stab_moon_HZ_B.txt","sat",2,"Stab_frac_moon_B.txt",1e5)
-plot_ep(ax3,output_fldr,"Stab_moon_HZ_AR.txt","sat",3,"Stab_frac_moon_AR.txt",1e6)
-plot_ep(ax4,output_fldr,"Stab_moon_HZ_BR.txt","sat",4,"Stab_frac_moon_BR.txt",1e6)
+plot_ep(ax1,data_dir,"Stab_moon_HZ_A.txt","sat",1,"Stab_frac_moon_A.txt",1e5)
+plot_ep(ax2,data_dir,"Stab_moon_HZ_B.txt","sat",2,"Stab_frac_moon_B.txt",1e5)
+plot_ep(ax3,data_dir,"Stab_moon_HZ_AR.txt","sat",3,"Stab_frac_moon_AR.txt",1e6)
+plot_ep(ax4,data_dir,"Stab_moon_HZ_BR.txt","sat",4,"Stab_frac_moon_BR.txt",1e6)
 
 
 fig.subplots_adjust(wspace=0.25,hspace=0.15)
