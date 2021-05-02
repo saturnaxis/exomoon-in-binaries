@@ -21,7 +21,7 @@ def get_params(x1,x2):
 def fit_power(x,C,a,k,b):
     return C*a**(k*x) + b
 
-data_dir = "../data/Fig6/"
+data_dir = "../data/Fig7/"
 
 
 star = ['N-body','Secular']
