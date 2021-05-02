@@ -11,7 +11,7 @@ A more detailed description of these simulations, methods, and the context for t
 @article{Quarles2021,
 author = {{Quarles}, B. and {Eggl}, S. and {Rosario-Franco}, M. and {Li}, G.},
 title = "{Exomoons in Systems with a Strong Perturber: Applications to $\alpha$ Cen AB}",
-journal = {\mnras},
+journal = {\aj},
 year = 2021,
 note = "submitted"
 }
