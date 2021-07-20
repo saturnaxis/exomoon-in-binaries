@@ -9,10 +9,17 @@ A more detailed description of these simulations, methods, and the context for t
 
 ```
 @article{Quarles2021,
-author = {{Quarles}, B. and {Eggl}, S. and {Rosario-Franco}, M. and {Li}, G.},
-title = "{Exomoons in Systems with a Strong Perturber: Applications to $\alpha$ Cen AB}",
-journal = {\aj},
-year = 2021,
-note = "submitted"
+ author = {{Quarles}, Billy and {Eggl}, Siegfried and {Rosario-Franco}, Marialis and {Li}, Gongjie},
+        title = "{Exomoons in Systems with a Strong Perturber: Applications to {\ensuremath{\alpha}} Cen AB}",
+      journal = {\aj},
+         year = 2021,
+        month = aug,
+       volume = {162},
+       number = {2},
+          eid = {58},
+        pages = {58},
+          doi = {10.3847/1538-3881/ac042a},
+       adsurl = {https://ui.adsabs.harvard.edu/abs/2021AJ....162...58Q},
+      adsnote = {Provided by the SAO/NASA Astrophysics Data System}
 }
 ```
